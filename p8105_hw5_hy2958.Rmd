@@ -1,0 +1,47 @@
+---
+title: "p8105_hw5_hy2958"
+output: github_document
+date: "2025-11-14"
+---
+
+```{r}
+library(tidyverse)
+set.seed(1)
+
+```
+
+```{r}
+#problem 1
+has_duplicate_birthday <- function(n) {
+  birthdays <- sample(1:365, size = n, replace = TRUE)
+  any(duplicated(birthdays))
+}
+
+birthday_prob_loop <- function(n, n_sim = 10000) {
+  result <- logical(n_sim)  ##create all 'false' list
+  for (i in 1:n_sim) {
+    result[i] <- has_duplicate_birthday(n)
+  }
+  mean(result)
+}
+
+
+birthday_df <- tibble(
+  group_size = 2:50,
+  prob_shared = map_dbl(2:50, birthday_prob_loop)
+)
+
+#plot
+birthday_df %>%
+  ggplot(aes(x = group_size, y = prob_shared)) +
+  geom_line()+
+  labs(
+    title = "Birthday Duplication Simulation",
+    x = "Group Size",
+    y = "Probability of Shared Birthday"
+  ) 
+```
+The plot shows the estimated probability that at least two people in a group share the same birthday changes with the group size.
+
+When the group size is small, the probability is close to 0, as the group size continues to increase, the probability grows quickly and approaches 1.
+
